@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Child Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4ff;
+      padding: 24px;
+    }
+
+    h2 {
+      color: #2d3a8c;
+      margin-bottom: 16px;
+      font-size: 1.2rem;
+    }
+
+    button {
+      background: #4f6ef7;
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background: #3550d4;
+    }
+
+    #content-area p {
+      background: #fff;
+      border-left: 4px solid #4f6ef7;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      color: #444;
+      line-height: 1.6;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h2>Child Content</h2>
+  <button id="expand-btn">+ Add More Content</button>
+  <div id="content-area"></div>
+
+  <script>
+    const paragraphs = [
+      "The universe is vast and full of mysteries waiting to be discovered by curious minds.",
+      "Every great journey begins with a single step — and a willingness to keep moving forward.",
+      "Technology is best when it brings people together and solves real-world problems.",
+      "Creativity is intelligence having fun. Never stop exploring new ideas and possibilities.",
+      "The best way to predict the future is to create it with purpose and passion.",
+    ];
+
+    let index = 0;
+
+    function notifyParent() {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({ type: 'resize', height: height }, '*');
+    }
+
+    document.getElementById('expand-btn').addEventListener('click', function () {
+      const area = document.getElementById('content-area');
+      const p = document.createElement('p');
+      p.textContent = paragraphs[index % paragraphs.length];
+      area.appendChild(p);
+      index++;
+
+      // Notify parent after DOM updates
+      requestAnimationFrame(() => notifyParent());
+    });
+
+    // Send initial height on load
+    window.addEventListener('load', notifyParent);
+  </script>
+</body>
+</html>
