@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parent Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e8ecf8;
+      padding: 32px;
+    }
+
+    header {
+      background: #2d3a8c;
+      color: #fff;
+      padding: 20px 28px;
+      border-radius: 12px;
+      margin-bottom: 28px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    header p {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .iframe-wrapper {
+      background: #fff;
+      border: 2px solid #c7d0f5;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(79, 110, 247, 0.1);
+      transition: height 0.4s ease;
+    }
+
+    iframe {
+      width: 100%;
+      border: none;
+      display: block;
+      transition: height 0.4s ease;
+    }
+
+    footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #8892b0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Parent Page</h1>
+    <p>The iframe below embeds the child page. Its height adjusts automatically as content is added.</p>
+  </header>
+
+  <div class="iframe-wrapper">
+    <iframe
+      id="child-frame"
+      src="https://mohamednowfal2024-pixel.github.io/NowfalPublicRepo/child2.html"
+      scrolling="no"
+    ></iframe>
+  </div>
+
+  <footer>Parent &rarr; Child communication via postMessage</footer>
+
+  <script>
+    const iframe = document.getElementById('child-frame');
+
+    window.addEventListener('message', function (event) {
+      if (event.data && event.data.type === 'resize') {
+        iframe.style.height = event.data.height + 'px';
+      }
+    });
+  </script>
+
+</body>
+</html>
