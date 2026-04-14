@@ -11,7 +11,15 @@
       padding: 0;
     }
 
+    /* Prevent the html element from stretching to fill the iframe height.
+       Without this, html.scrollHeight mirrors the iframe's set height,
+       causing getHeight() to always report the old (large) value. */
+    html {
+      height: auto;
+    }
+
     body {
+      width: 100%;
       font-family: 'Segoe UI', sans-serif;
       background: #f0f4ff;
       padding: 24px;
@@ -72,17 +80,20 @@
       var lastHeight = 0;
       var rafId     = null;
 
-      /* 1. Accurate height — takes the maximum of all
-            measurement strategies to avoid underreporting
-            caused by margin-collapsing or box model quirks. */
+      /* 1. Accurate height — use getBoundingClientRect() on the body,
+            which returns the actual rendered content height regardless
+            of how tall the iframe (and html element) currently is.
+            We intentionally avoid html.scrollHeight / html.clientHeight
+            because the parent's iframe.style.height causes the html element
+            to stretch, making those values mirror the old iframe height
+            and preventing the iframe from ever shrinking. */
       function getHeight() {
-        var body = document.body;
-        var html = document.documentElement;
-        return Math.max(
-          body.scrollHeight,  body.offsetHeight,
-          html.scrollHeight,  html.offsetHeight,
-          html.clientHeight
-        );
+        var body     = document.body;
+        var rect     = body.getBoundingClientRect();
+        var style    = window.getComputedStyle(body);
+        var mTop     = parseFloat(style.marginTop)    || 0;
+        var mBottom  = parseFloat(style.marginBottom) || 0;
+        return Math.ceil(rect.height + mTop + mBottom);
       }
 
       /* 2. Send only when height actually changed
