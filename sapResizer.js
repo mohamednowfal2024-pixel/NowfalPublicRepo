@@ -10,13 +10,19 @@
     var rafId = null;
 
     /* 1. Accurate height — use getBoundingClientRect() on the body,
-          which returns the rendered content height.
-          We intentionally ignore body margins here to avoid a feedback
-          loop when pages use min-height: 100vh inside an iframe. */
+          which returns the actual rendered content height regardless
+          of how tall the iframe (and html element) currently is.
+          We intentionally avoid html.scrollHeight / html.clientHeight
+          because the parent's iframe.style.height causes the html element
+          to stretch, making those values mirror the old iframe height
+          and preventing the iframe from ever shrinking. */
     function getHeight() {
         var body = document.body;
         var rect = body.getBoundingClientRect();
-        return Math.ceil(rect.height);
+        var style = window.getComputedStyle(body);
+        var mTop = parseFloat(style.marginTop) || 0;
+        var mBottom = parseFloat(style.marginBottom) || 0;
+        return Math.ceil(rect.height + mTop + mBottom);
     }
 
     /* 2. Send only when height actually changed
