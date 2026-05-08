@@ -81,7 +81,7 @@
     const iframe = document.getElementById('child-frame');
 
     window.addEventListener('message', function (event) {
-      if (event.data && event.data.type === 'resize') {
+      if (event.data && event.data.type === 'sapLandingPageResize') {
         iframe.style.height = event.data.height + 'px';
       }
     });
